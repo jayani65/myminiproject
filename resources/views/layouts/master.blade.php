@@ -68,7 +68,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-            <li class="nav-item menu-open">
+            <li class="nav-item ">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
@@ -77,7 +77,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </p>
               </a>
             </li>
-            <li class="nav-item menu-open">
+            <li class="nav-item ">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-graduation-cap"></i>
                 <p>
@@ -86,7 +86,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </p>
               </a>
             </li>
-            <li class="nav-item menu-open">
+            <li class="nav-item ">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
@@ -95,8 +95,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </p>
               </a>
             </li>
-            <li class="nav-item menu-open">
-              <a href="#" class="nav-link">
+            <li class="nav-item ">
+              <a href="{{route('user.index')}}" class="nav-link">
                 <i class="nav-icon fas fa-user"></i>
                 <p>
                   Users
@@ -104,43 +104,65 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </p>
               </a>
             </li>
-            <li class="nav-item menu-open">
+            <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-cogs"></i>
-                <p>
-                  Management
-
-                </p>
-              </a>
-            <ul>
-            <li class="nav-item menu-open">
-              <a href="{{route('permission.index')}}" class="nav-link">
-                <i class="nav-icon fas fa-key"></i>
-                <p>
-                  Permissions
-
-                </p>
-              </a>
-            </li>
-            <li class="nav-item menu-open">
-              <a href="{{route('role.index')}}" class="nav-link">
-                <i class="nav-icon fas fa-key"></i>
-                <p>
-                  Roles
-                </p>
-              </a>
-            </li>
-            </ul>
-            </li>
-            <li class="nav-item menu-open">
-            <a href="{{route('user.profile')}}" class="nav-link">
-                <i class="nav-icon fas fa-user-circle"></i>
-                <p>
-                  Profile
-                </p>
+              <i class="nav-icon fas fa-cogs orange"></i>
+              <p>
+                Management
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('permission.index')}}" class="nav-link">
+                  <i class="fas fa-users cyan nav-icon"></i>
+                  <p>Permission</p>
                 </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('role.index')}}" class="nav-link">
+                  <i class="fas fa-users cyan nav-icon"></i>
+                  <p>Roles</p>
+                </a>
+              </li>
+             
+            
+            </ul>
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-circle"></i>
+              <p>
+                Profile
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('user.profile')}}" class="nav-link">
+                  <i class="fas fa-users cyan nav-icon"></i>
+                  <p>Edit profile</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('userGetpassword')}}" class="nav-link">
+                  <i class="fas fa-users cyan nav-icon"></i>
+                  <p>Change password</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="fas fa-users cyan nav-icon"></i>
+                  <p>Edit profile photo</p>
+                </a>
+              </li>
+            
+            </ul>
+          </li>
+            
             </li>
-            <li class="nav-item menu-open">
+            
+            <li class="nav-item ">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-sign-out-alt"></i>
                 <p>

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -13,7 +13,18 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return view('user.index');
+    }
+    public function getAll()
+    {
+       $users=User::latest()->get();
+       $users->transform(function($user){
+       $user->role= $user->getRoleNames()->first();
+       return $user;
+       });
+       return response()->json([
+           'users'=> $users
+       ], 200);
     }
 
     /**
@@ -23,7 +34,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -34,7 +45,25 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name'=>'required|string',
+            'phone'=>'required',
+            'email'=>'required|email|unique:users' ,
+            'password'=>'required|alpha_num|min:6',
+            'role'=>'required'
+           ]);
+
+           $user= new User();
+           $user->name= $request->name;
+           $user->email= $request->email;
+           $user->phone= $request->phone;
+           $user->password=bcrypt($request->password);
+           $user->assignRole($request->role);
+           if($request->has('permissions')){
+               $user->givePermissionTo($request->permissions);
+           }
+           $user->save();
+           return response()->json("user created", 200);
     }
 
     /**
@@ -97,5 +126,22 @@ class UserController extends Controller
 
       $user->update($request->all());
     return redirect()->back()->with('success', 'profile updated successfully');
+    }
+
+    public function getPassword(){
+        return view ('profile.password');
+    }
+    public function postPassword(Request $request){
+        $this->validate($request, [
+            
+            'newpassword'=>'required|min:6|max:30|confirmed' 
+           ]);
+           
+           $user=auth()->user();
+
+           $user->update( [
+           'password'=>bcrypt($request->newpassword)
+           ]);
+           return redirect()->back()->with('success', 'password changed successfully');
     }
 }

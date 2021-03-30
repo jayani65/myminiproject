@@ -11,16 +11,17 @@ class PermissionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __construct(Permission $permission){
+     public function __construct(Permission $permission){
       $this->permission= $permission;
-      $this->middleware("auth");
+     $this->middleware("auth");
 
     }
     public function index()
     {
-        $permissions=$this->permission::all();
+        
+         $permissions=$this->permission::all();
        
-         return view ("permission.index", ['permissions'=>'$permissions']);
+         return view ("permission.index", ['permissions'=>$permissions]);
     }
 
     /**
@@ -30,7 +31,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        //
+        return view ("permission.create");
     }
 
     /**
@@ -41,7 +42,20 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name'=>'required',
+        ]);
+        $this->permission->create([
+            'name'=>$request->name
+        ]);
+
+        return redirect()->route('permission.index')->with('success', 'permission created');
+    }
+    public function getAll(){
+        $permissions=$this->permission->all();
+        return response()->json([
+            'permissions'=>$permissions
+        ], 200);
     }
 
     /**
@@ -87,5 +101,13 @@ class PermissionController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function getAllPermissions()
+    {
+       $permissions=$this->permission::all();
+
+       return response()->json([
+           'permissions'=> $permissions
+       ], 200);
     }
 }

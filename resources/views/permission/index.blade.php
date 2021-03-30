@@ -1,5 +1,8 @@
 @extends('layouts.master')
+@section('title')
+Permission
 
+@endsection
 @section('content')
 <div class="container">
 <div class="col-12">
@@ -18,22 +21,26 @@
                     <tr>
                       <th>ID</th>
                       <th>Name</th>
-                      <th>Action</th>
                       <th>Date posted</th>
+                      <th>Action</th>
                      
                     </tr>
                   </thead>
                   <tbody>
+                 
+                   @forelse($permissions as $permission)
                     <tr>
-                      <td>183</td>
-                      <td>John Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-success">Approved</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                      <td>{{$permission->id}}</td>
+                      <td>{{$permission->name}}</td>
+                      <td>{{$permission->created_at}}</td>
+                      <td>
+                      <a href="{{route('permission.edit',$permission->id)}}" class="btn btn-sm btn-info">Edit permissions</a>
+                     
+                      </td>
                     </tr>
-                   
-                    
-                    
+                    @empty
+                    <tr>Not found</tr>
+                    @endforelse
                   </tbody>
                 </table>
               </div>
