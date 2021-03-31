@@ -40,3 +40,4 @@ Route::get('/getAllUsers',[App\Http\Controllers\UserController::class, 'getAll']
 Route::get('/getAllRoles',[App\Http\Controllers\RoleController::class, 'getAll']);
 Route::get('/getAllPermissions',[App\Http\Controllers\PermissionController::class, 'getAll']);
 Route::post('/account/create',[App\Http\Controllers\UserController::class,'store']);
+Route::put('/account/update/{id}',[App\Http\Controllers\UserController::class,'update']);

@@ -7,7 +7,7 @@
                    <ul class="nav nav-pills ml-auto">
                        
                        <li class="nav-item mr-1">
-                           <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#createUser"><i class="fas fa-pulse-circle" ></i>Add new</button>
+                           <button class="btn btn-sm btn-primary" type="button" @click="createMode" ><i class="fas fa-pulse-circle" ></i>Add new</button>
                        </li>
                        <li class="nav-item">
                           <div class="input-group mt-0 input-group-sm" style="width:350px">
@@ -41,8 +41,8 @@
                                    <td>{{user.role}}</td>
                                    <td>{{user.email}}</td>
                                    <td>
-                                           <button class="btn btn-sm btn-info"><i class="fa fa-eye">View</i></button>
-                                           <button class="btn btn-sm btn-warning"><i class="fa fa-edit">Edit</i></button>
+                                           <button class="btn btn-sm btn-info" @click="viewUser(user)"><i class="fa fa-eye">View</i></button>
+                                           <button class="btn btn-sm btn-warning" @click="editUser(user)"><i class="fa fa-edit">Edit</i></button>
                                            <button class="btn btn-sm btn-danger"><i class="fa fa-trash">Delete</i></button>
                                            
                                    </td>
@@ -52,17 +52,40 @@
                        
                    </table>
                </div>
+               <loading :loading="loading"></loading>
         </div>
+
+         <div class="modal fade" id="viewUser" tabindex="-1" role="dialog" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+       
+      <div class="row">
+       <div class="col-md-6">
+         <p><b>Name</b>{{user.name}}</p>
+         <p><b>Email</b>{{user.email}}</p>
+         <p><b>Last updated</b>{{user.updated_at}}</p>
+         <p><b>Date posted</b>{{user.created_at}}</p>
+       </div> 
+        <!-- <div class="col-md-6">
+          <img :src="img" class="img-circle">
+        </div> -->
+     </div>
+    </div>
+    </div>
+  </div>
+         </div>
     <div class="modal fade" id="createUser" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="createUserModalLabel">Create User</h5>
+        <h5 class="modal-title" id="createUserModalLabel" v-show="!editMode">Create User</h5>
+        <h5 class="modal-title" id="createUserModalLabel" v-show="editMode">Edit User</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-       <form role="form" @submit.prevent="createUser">
+       <form>
         <div class="modal-body">
        
           <div class="form-group">
@@ -115,9 +138,10 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <b-button variant="primary" v-if="!load" class="btn-lg" disabled>
-<b-spinner small type="grow"></b-spinner>Loading
+<b-spinner small type="grow"></b-spinner>{{action}}
         </b-button> 
-        <button type="submit"  class="btn btn-lg btn-primary"  >Save</button>
+        <button type="submit" v-if="load" v-show="!editMode" class="btn btn-lg btn-primary" @click.prevent="createUser" >Save</button>
+        <button type="submit" v-if="load" v-show="editMode" class="btn btn-lg btn-success" @click.prevent="!editMode ? createUser:updateUser" >Update</button>
       </div>
     </div>
   </div>
@@ -131,11 +155,17 @@
 export default {
     data(){
 return {
+  action:'',
+     loading:false,
+     editMode:false,
      load:true,
+     //img : '',
+     user:{},
     users:[],
     roles:[],
     permissions:[],
     form:new Form({
+      'id':'',
       'name':'',
       'email':'',
       'phone':'',
@@ -148,17 +178,33 @@ return {
     },
     methods:{
          getUsers(){
+          
+           this.loading=true;
             axios.get("/getAllUsers")
             .then((response)=>{
+                this.loading=false;
                 this.users= response.data.users
             
             }).catch(()=>{
+              this.loading=false;
                this.$toastr.e("cannot load user","error");
                 
             });
            
             
     
+        },
+        createMode(){
+          this.editMode=false;
+         $('#createUser').modal('show'); 
+        },
+        editUser(user){
+          this.editMode=true;
+          this.form.reset();
+          this.form.fill(user);
+          this.form.role=user.roles[0].id;
+          this.form.permissions=user.userPermissions;
+         $('#createUser').modal('show'); 
         },
         
         
@@ -177,7 +223,7 @@ return {
             });
         },
             createUser(){
-              console.log("hiiii");
+               this.action="creating user....";
               this.load=false;
               this.form.post('/account/create')
                 .then((response)=>{
@@ -191,6 +237,28 @@ return {
                  this.$toastr.e("cannot load user","error");
                 
               });
+            },
+            updateUser(){
+             this.action="updating user....";
+              this.load=false;
+              this.form.put('/account/update'+this.form.id)
+                .then((response)=>{
+                  this.load=true;
+                  this.$toastr.s("user updated successfully","created");
+                 Fire.$emit("loadUser");
+                 $("#createUser").modal("hide");
+              this.form.reset();
+               }).catch(()=>{
+                this.load=true;
+                 this.$toastr.e("cannot update user","error");
+                
+              });
+            },
+            viewUser(user){
+               $('#viewUser').modal('show');
+
+              this.user=user;
+             
             }
     },
     created(){
